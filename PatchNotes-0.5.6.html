@@ -1,0 +1,497 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KillPort Alpha 0.5.6</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Exo+2:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #140c10;
+    --panel: #1f1418;
+    --panel-2: #2a1b22;
+    --line: rgba(157, 123, 255, 0.28);
+    --violet: #9d7bff;
+    --violet-soft: #c9b8ff;
+    --cream: #e8dcc4;
+    --muted: #a8977f;
+    --gold: #ffd63a;
+    --red: #ff4858;
+    --pink: #ff3d9a;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--cream); }
+  body { font: 16px/1.6 "Exo 2", system-ui, sans-serif; }
+  a { color: var(--violet-soft); }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 0 16px 80px; }
+
+  header { position: relative; padding: 64px 0 40px; text-align: center; overflow: hidden; }
+  header::before {
+    content: ""; position: absolute; left: 50%; top: 100%; width: 1200px; height: 1200px; transform: translate(-50%, -18%);
+    border: 2px solid var(--violet); border-radius: 50%; opacity: .5;
+  }
+  header > * { position: relative; z-index: 1; }
+  .tag { display: inline-block; font: 13px "Russo One", sans-serif; letter-spacing: .18em; color: var(--violet-soft);
+         border: 1px solid var(--line); padding: 4px 12px; border-radius: 999px; }
+  h1 { font: clamp(44px, 9vw, 88px)/1 "Russo One", sans-serif; margin: 18px 0 8px; letter-spacing: .01em; }
+  h1 span { color: var(--violet); }
+  .lead { color: var(--muted); max-width: 640px; margin: 0 auto; font-size: 18px; }
+
+  .highlights { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin: 28px 0 8px; }
+  .hl { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 18px 18px 16px; }
+  .hl b { display: block; font: 20px "Russo One", sans-serif; color: var(--cream); margin-bottom: 4px; }
+  .hl p { margin: 0; color: var(--muted); font-size: 15px; }
+  .hl i { font-style: normal; color: var(--violet); font: 13px "Russo One", sans-serif; letter-spacing: .12em; }
+
+  nav { position: sticky; top: 0; z-index: 5; background: rgba(20, 12, 16, .92); backdrop-filter: blur(6px);
+        border-bottom: 1px solid var(--line); margin: 0 -16px; padding: 10px 16px; display: flex; gap: 8px;
+        overflow-x: auto; scrollbar-width: none; }
+  nav::-webkit-scrollbar { display: none; }
+  nav a { flex: 0 0 auto; text-decoration: none; color: var(--cream); font-size: 14px; padding: 6px 12px;
+          border: 1px solid var(--line); border-radius: 999px; }
+  nav a:hover { border-color: var(--violet); color: var(--violet-soft); }
+
+  section { margin-top: 48px; scroll-margin-top: 64px; }
+  h2 { font: 30px "Russo One", sans-serif; margin: 0 0 6px; display: flex; align-items: center; gap: 12px; }
+  h2::before { content: ""; width: 6px; height: 30px; border-radius: 3px; background: var(--violet); flex: 0 0 auto; }
+  .sub { color: var(--muted); margin: 0 0 18px; }
+  h3 { font: 19px "Russo One", sans-serif; margin: 0 0 8px; color: var(--cream); }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 14px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 18px 20px; }
+  .card.wide { grid-column: 1 / -1; }
+  ul { margin: 0; padding-left: 20px; }
+  li { margin: 4px 0; }
+  li::marker { color: var(--violet); }
+  .key { display: inline-block; font: 12px/1 "Russo One", sans-serif; padding: 4px 7px 3px; border-radius: 5px;
+         background: var(--panel-2); border: 1px solid var(--line); color: var(--cream); vertical-align: 1px; }
+  .hero-gunner h3 { color: var(--gold); }
+  .hero-ninja h3 { color: var(--red); }
+  .hero-agent h3 { color: var(--violet-soft); }
+
+  .mods { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; }
+  .mod-group { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 16px 18px; }
+  .mod-group h3 { font-size: 15px; letter-spacing: .12em; }
+  .mod-group small { display: block; color: var(--muted); margin: -4px 0 10px; }
+  .vow h3 { color: var(--red); } .challenge h3 { color: var(--gold); } .rule h3 { color: var(--violet-soft); } .help h3 { color: #7fe0a8; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip { font-size: 14px; padding: 3px 10px; border-radius: 999px; background: var(--panel-2); border: 1px solid var(--line); }
+  .chip.new { border-color: var(--gold); }
+  .chip.new::after { content: " NEW"; font: 10px "Russo One", sans-serif; color: var(--gold); letter-spacing: .08em; }
+
+  .note { margin-top: 14px; color: var(--muted); font-size: 14px; }
+  footer { margin-top: 64px; padding-top: 20px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; text-align: center; }
+
+  @media (max-width: 520px) {
+    header { padding-top: 40px; }
+    .lead { font-size: 16px; }
+    h2 { font-size: 24px; }
+    .card { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <span class="tag">ALPHA 0.5.6</span>
+  <h1>Kill<span>Port</span></h1>
+  <p class="lead">Ульты для каждого героя, первый босс, модификаторы арены, обучение вместе с Iris и новый облик меню. Убил — оказался на его месте: теперь этот выбор стал ещё острее.</p>
+
+  <div class="highlights">
+    <div class="hl"><i>ГЕРОИ</i><b>Ульты</b><p>Своя у каждого героя, заряд за стиль, на <span class="key">Q</span> / <span class="key">Y</span>.</p></div>
+    <div class="hl"><i>БОСС</i><b>Элит</b><p>Щит, охрана, телепорты. Ждёт на 25-й волне.</p></div>
+    <div class="hl"><i>АРЕНА</i><b>22 модификатора</b><p>Обеты, испытания, правила и помощь, есть отдельная таблица рекордов.</p></div>
+    <div class="hl"><i>IRIS</i><b>Обучение</b><p>Курс по этапам, больше сотни реплик и её собственное окно.</p></div>
+  </div>
+
+</header>
+
+  <nav>
+    <a href="#heroes">Герои</a>
+    <a href="#ults">Ульты</a>
+    <a href="#enemies">Враги и волны</a>
+    <a href="#mods">Модификаторы</a>
+    <a href="#upgrades">Улучшения</a>
+    <a href="#iris">Iris и обучение</a>
+    <a href="#menus">Меню</a>
+    <a href="#hud">HUD</a>
+    <a href="#settings">Настройки</a>
+    <a href="#sound">Музыка и звук</a>
+    <a href="#world">Мир</a>
+  </nav>
+
+<section id="ults">
+  <h2>Ульты</h2>
+  <p class="sub">Заряжаются со временем волны, за каждое убийство и сильнее всего за стильные убийства. Включаются на <span class="key">Q</span> или <span class="key">Y</span> на геймпаде.</p>
+  <div class="cards">
+    <div class="card hero-gunner">
+      <h3>Стрелок · Мёртвый глаз</h3>
+      <ul>
+        <li>Круги сходятся на головах врагов, и они помечаются в любом порядке.</li>
+        <li>Залп по всем меткам, затем перенос по очереди на место каждого убитого.</li>
+        <li>Если голова уже помечена, залп можно дать сразу, не дожидаясь остальных.</li>
+      </ul>
+    </div>
+    <div class="card hero-ninja">
+      <h3>Ниндзя · Отражение</h3>
+      <ul>
+        <li>5 секунд каждый выстрел по ней возвращается в голову тому, кто стрелял.</li>
+        <li>Парирует со всех сторон, а не только спереди.</li>
+        <li>Пока ульта активна, выносливость не тратится.</li>
+      </ul>
+    </div>
+    <div class="card hero-agent">
+      <h3>Агент · Вне фазы</h3>
+      <ul>
+        <li>5 секунд Агент видит врагов сквозь стены и стреляет сквозь них.</li>
+        <li>Рикошеты ульты тоже проходят сквозь стены.</li>
+      </ul>
+    </div>
+    <div class="card wide">
+      <h3>Как это выглядит</h3>
+      <ul>
+        <li>Внизу экрана теперь колесо героя: бобина Стрелка, сюрикен Ниндзя, часы Агента. Пока ульта копится, из-под края видна половина колеса и дуга заряда.</li>
+        <li>Готовая ульта поднимается, увеличивается и загорается цветом героя, а при заполнении звучит отдельный сигнал. Пока ульта действует, круговая шкала показывает оставшееся время.</li>
+        <li>У каждой ульты своя цветокоррекция мира.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="heroes">
+  <h2>Герои</h2>
+  <p class="sub">Каждый герой получил новые приёмы, а движение и оружие — больше веса.</p>
+  <div class="cards">
+    <div class="card hero-gunner">
+      <h3>Стрелок</h3>
+      <ul>
+        <li>«Точность» (замедление времени) теперь на <span class="key">Shift</span> / <span class="key">LB</span>, прицел — на <span class="key">ПКМ</span>. Одна настройка возвращает оба действия на ПКМ.</li>
+        <li>Радар стал компасом: ближние враги видны метками, дальние — дугами на кольце. Компас поворачивается вместе с обзором.</li>
+        <li>Новая анимация выстрела из револьвера.</li>
+      </ul>
+    </div>
+    <div class="card hero-ninja">
+      <h3>Ниндзя</h3>
+      <ul>
+        <li>Цепляется за любую стену в прыжке и висит на ней, а потом сползает. Если отпустить «вперёд» на бегу по стене, она тормозит и повисает.</li>
+        <li>Из висения клавиша <span class="key">W</span> разгоняет её в бег по стене.</li>
+        <li>Катана парирует ближние атаки в передней дуге, в трёх позах. Готовность и откат парирования видны на шкале здоровья.</li>
+        <li>Выносливость и точки рывка окрашены в её красный.</li>
+      </ul>
+    </div>
+    <div class="card hero-agent">
+      <h3>Агент</h3>
+      <ul>
+        <li>Метка короткого телепорта стала объёмной. Если на место нельзя встать, метка краснеет, а <span class="key">ЛКМ</span> отменяет прыжок без траты заряда.</li>
+        <li>Выстрел сам отменяет фазовый сдвиг тем же нажатием.</li>
+        <li>В управлении есть вариант «Рывок + Прицел».</li>
+        <li>Пистолет в фазе выглядит по-другому, а враги окрашиваются в его цвет.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Камера и оружие</h3>
+      <ul>
+        <li>Поле зрения плавно растёт со скоростью.</li>
+        <li>Камера наклоняется при стрейфе, оружие покачивается в такт шагам, руки отстают по инерции.</li>
+        <li>Прыжок и приземление дают толчок.</li>
+        <li>При прицеливании всё это затихает. Отключается и регулируется в «Настройки → Игра».</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Оригинал</h3>
+      <ul><li>Оригинал временно убран из выбора героя. Его старые сохранения загружаются за Стрелка.</li></ul>
+    </div>
+  </div>
+</section>
+
+<section id="enemies">
+  <h2>Враги и волны</h2>
+  <div class="cards">
+    <div class="card wide">
+      <h3>Босс «Элит»</h3>
+      <ul>
+        <li>Приходит на 25-й волне, дальше каждые 25 волн. С 50-й волны их двое, и у каждого свой щит.</li>
+        <li>Щит держит поток охраны, отмеченный парящими стрелками. Убейте охрану, чтобы щит упал.</li>
+        <li>Без щита его можно добить 12 попаданиями в тело или сразу выстрелом в голову. Затянете — щит вернётся.</li>
+        <li>Стреляет стоя и телепортируется по безопасным точкам. Сняли щит — уходит вдаль или прячется в толпе, смотря что у вас наготове.</li>
+        <li>У него есть запись в Бестиарии и своя музыка.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Особые волны</h3>
+      <ul>
+        <li>С 8-й волны каждая шестая волна особая: 8, 14, 20…</li>
+        <li>Тема особой волны объявляется за две волны вперёд.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Ритм забега</h3>
+      <ul>
+        <li>Улучшения теперь раз в 3 волны.</li>
+        <li>Очки дают только убийства, которые волна запланировала: лишних врагов на очки не нафармить.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="mods">
+  <h2>Модификаторы арены</h2>
+  <p class="sub">Экран после выбора карты. Включите сколько угодно, если они сочетаются, — множители очков перемножаются. Забег с модификаторами попадает в свою таблицу рекордов и даёт отметки мастерства. Есть «Выбрать всё» (<span class="key">Ins</span>). Карточка показывает модификатор под курсором, без наведения — выбранный.</p>
+  <div class="mods">
+    <div class="mod-group vow">
+      <h3>ОБЕТЫ</h3><small>нарушил — смерть</small>
+      <div class="chips"><span class="chip">Без урона</span><span class="chip">Рукопашка</span><span class="chip">Только в голову</span><span class="chip">Комбо</span><span class="chip">Без промахов</span></div>
+    </div>
+    <div class="mod-group challenge">
+      <h3>ИСПЫТАНИЯ</h3><small>сложнее</small>
+      <div class="chips"><span class="chip">Посмертный заряд</span><span class="chip">Без улучшений</span><span class="chip">Без передышки</span><span class="chip new">Рикошеты</span><span class="chip new">Шлемы</span><span class="chip new">Жажда крови</span><span class="chip new">Принцип акулы</span></div>
+    </div>
+    <div class="mod-group rule">
+      <h3>ПРАВИЛА</h3><small>другая игра</small>
+      <div class="chips"><span class="chip">Без телепортов</span><span class="chip">Отложенный телепорт</span><span class="chip">Гигантизм</span><span class="chip">Невесомость</span><span class="chip">Кровавая месть</span><span class="chip">Замес</span><span class="chip">Праздник</span></div>
+    </div>
+    <div class="mod-group help">
+      <h3>ПОМОЩЬ</h3><small>легче, очков меньше</small>
+      <div class="chips"><span class="chip">С одного удара</span><span class="chip new">Вечные патроны</span><span class="chip new">Вурдалак</span></div>
+    </div>
+  </div>
+  <div class="cards" style="margin-top:14px">
+    <div class="card wide">
+      <h3>Новые в этой версии</h3>
+      <ul>
+        <li><b>Рикошеты</b>: пули врагов отскакивают от стен.</li>
+        <li><b>Шлемы</b>: в голову урона нет, только в тело. Попадание в шлем звучит, как выстрел в голову манекену.</li>
+        <li><b>Жажда крови</b>: в бою здоровье убывает, каждое убийство возвращает часть.</li>
+        <li><b>Принцип акулы</b>: стоите на месте в бою — теряете здоровье.</li>
+        <li><b>Вечные патроны</b>: боезапас не кончается.</li>
+        <li><b>Вурдалак</b>: лечение за каждое убийство. «Вампиризм» при нём не выпадает.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="upgrades">
+  <h2>Новые улучшения</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>Для всех</h3>
+      <ul><li><b>Защита телепорта</b>: 2 секунды защиты после переноса. Появляется в перерывах после 24-й волны.</li></ul>
+    </div>
+    <div class="card hero-ninja">
+      <h3>Ниндзя</h3>
+      <ul>
+        <li><b>Рассекающий рывок</b>: рывок сразу убивает обычных врагов.</li>
+        <li><b>Бумеранг</b>: промахнувшийся сюрикен возвращается в руку и по пути режет врагов.</li>
+        <li><b>Пригвождение</b>: сюрикен в тело пригвождает врага — тот не ходит и не стреляет.</li>
+      </ul>
+    </div>
+    <div class="card hero-agent">
+      <h3>Агент</h3>
+      <ul>
+        <li><b>Сквозь стену</b>: телепорт сквозь стену, если за ней есть место. Метку видно через стену в круглом окне.</li>
+        <li><b>Долгая фаза</b>: +0,5 секунды фазового сдвига за уровень, всего 3 уровня.</li>
+        <li><b>Тень</b> теперь работает с фазовым сдвигом.</li>
+      </ul>
+    </div>
+  </div>
+  <p class="note">В Кодексе улучшения открываются по мере того, как вы их находите в забегах.</p>
+</section>
+
+<section id="iris">
+  <h2>Iris и обучение</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>Обучение</h3>
+      <ul>
+        <li>Пункт «Обучение» в главном меню и в Кодексе: весь курс или любой этап по отдельности.</li>
+        <li>Пройденные этапы отмечены галочками. После этапа, сыгранного отдельно, игра спросит, что делать дальше.</li>
+        <li>Плиты, на которые нужно встать. Стены поднимаются из-под пола.</li>
+        <li>После смерти или падения вы возвращаетесь к началу урока. На паузе есть «Этап заново» и «Этапы».</li>
+        <li>Патроны в обучении бесконечные. Убийства там не идут в статистику профиля.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Iris</h3>
+      <ul>
+        <li>Больше сотни новых реплик: знакомство, ваше имя, возвращения, уроки, напоминания. 13 выражений лица.</li>
+        <li>Iris по-своему реагирует на имя. Некоторые имена ей не понравятся.</li>
+        <li>Клавиши в её репликах нарисованы значками, под каждой репликой подсказка «Enter — дальше».</li>
+        <li>Iris комментирует снимки экрана.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Её окно</h3>
+      <ul>
+        <li>Окно раскрывается из точки: сначала линия, потом портрет, потом текст. Закрывается в обратном порядке.</li>
+        <li>Портрет показан с эффектом старого ЭЛТ-экрана.</li>
+        <li>Потяните полоску у портрета вправо — Iris сворачивается вслед за курсором. Отпустили на полпути — раскроется обратно. Клик по точке открывает её снова. Работает везде, и на паузе тоже.</li>
+        <li>Кликом по портрету в главном меню её можно свернуть в точку.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Если она мешает</h3>
+      <ul>
+        <li>«Настройки → Игра → Скрыть Iris»: она попрощается и уйдёт.</li>
+        <li>«Рассказать всё заново?» сбрасывает её подсказки, но сохраняет имя и прогресс обучения.</li>
+        <li>На паузе Iris показывает взятые улучшения и включённые модификаторы, каждый список — своей кнопкой.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="menus">
+  <h2>Меню</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>Колёса меню</h3>
+      <ul>
+        <li>Тонкая фиолетовая дуга, круглые маркеры, крупный выбранный пункт.</li>
+        <li>В центре колеса вращается образ героя: бобина Стрелка, сюрикен Ниндзя. При смене пункта он ускоряется. Часы Агента показывают ваше настоящее время.</li>
+        <li>Колесо меню превращается в колесо вкладок настроек и обратно.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Выбор карты и героя</h3>
+      <ul>
+        <li>Новые карточки 3:4. На карточке карты её картинка, невыбранные карты размыты.</li>
+        <li>Пока Iris говорит, карточки отъезжают из-под её слов.</li>
+        <li>Галочка «не показывать выбор персонажа при перезапуске».</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Пауза</h3>
+      <ul>
+        <li>Новый пункт «Закончить забег»: забег засчитывается, как после смерти.</li>
+        <li>«Перезапустить» и «Сохранить и выйти» сначала спрашивают подтверждение.</li>
+        <li>В обучении — «Этапы» и «Этап заново».</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>После забега и рекорды</h3>
+      <ul>
+        <li>Три кнопки: «Рестарт» (сразу в бой тем же героем), «Выбрать карту и героя», «Меню».</li>
+        <li>В «Рекордах» строка «Лучший забег» открывает полный отчёт этого забега: строки, стиль, кто убил, взятые улучшения.</li>
+      </ul>
+    </div>
+    <div class="card wide">
+      <h3>Кодекс</h3>
+      <ul>
+        <li>Новые вкладки «Справка» и «Обучение». Улучшения показаны сеткой значков, по шесть в ряд, с описанием выбранного справа.</li>
+        <li>В Бестиарии появился Элит.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="hud">
+  <h2>HUD</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>Здоровье и ресурсы</h3>
+      <ul>
+        <li>Скорость движения показана под числом HP и следует за ним. Отключается в «Настройки → Интерфейс».</li>
+        <li>Шкала парирования Ниндзя прямо на блоке здоровья.</li>
+        <li>Счётчик «Мести» показывает шаги: «0/8».</li>
+        <li>Удар, который приняла защита, отмечен синим полумесяцем.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Отображение ввода</h3>
+      <ul>
+        <li>Клавиатура QWERTY и мышь с подсветкой нажатых кнопок.</li>
+        <li>Для геймпада — сам геймпад: курки заполняются, стики двигаются.</li>
+        <li>Размер и место на экране настраиваются: над HP или в любом углу.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Счётчик FPS</h3>
+      <ul><li>Включается в настройках. Можно выбрать угол, размер, цвет, прозрачность и показывать ли слово «FPS».</li></ul>
+    </div>
+    <div class="card">
+      <h3>Итоги волны</h3>
+      <ul><li>Оценка волны не перекрывает ульту. Баннер новой волны ждёт, пока она уйдёт.</li></ul>
+    </div>
+  </div>
+</section>
+
+<section id="settings">
+  <h2>Настройки</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>Экран</h3>
+      <ul>
+        <li>Разрешение и режим окна меняются кнопкой «Применить». «Отмена» возвращает как было.</li>
+        <li>Окно игры можно тянуть мышью.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Звук</h3>
+      <ul>
+        <li>Новая страница: карточки громкости по группам.</li>
+        <li>Переключатель «Выключить музыку» не трогает громкость. «Динамическая музыка» включается и выключается.</li>
+        <li>Саундтрек по умолчанию — Hit &amp; Run.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Игра</h3>
+      <ul>
+        <li>Динамика камеры и оружия: общий выключатель, сила и отдельные переключатели.</li>
+        <li>«Скрыть Iris».</li>
+        <li>Подсказки управления показывают ваши собственные назначения клавиш.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="sound">
+  <h2>Музыка и звук</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>Новая музыка</h3>
+      <ul>
+        <li><b>Preparation</b> в главном меню.</li>
+        <li><b>Comprehension</b> в обучении: музыка нарастает по ходу курса.</li>
+        <li><b>Fight or Flight</b> на боссе: вторая фаза включается, когда у Элита останется половина здоровья. После победы звучит финальная тема.</li>
+        <li><b>Rethinking</b> на паузе, в Кодексе и настройках, у каждой страницы свой слой.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Звуки</h3>
+      <ul>
+        <li>При малом здоровье слышно сердцебиение.</li>
+        <li>Сигнал готовности ульты.</li>
+        <li>Свои звуки у разрыва комбо и у неудавшейся «Мести».</li>
+        <li>Новый звук удара по игроку.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="world">
+  <h2>Мир</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>Кровь</h3>
+      <ul>
+        <li>На каждом уровне крови — свои ошмётки.</li>
+        <li>Ошмётки оставляют следы на стенах. Их можно пинать, а удары и взрывы их разбрасывают.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Карты</h3>
+      <ul>
+        <li>На картах появился дальний туман.</li>
+        <li>На «Башнях» улучшения появляются в центре карты.</li>
+        <li>Карта «Лего» убрана. Остались «Арена» и «Башни».</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<footer>KillPort · Alpha 0.5.6 · Числа и ощущения ещё проверяются вживую. Пишите, что зашло и что нет.</footer>
+
+</div>
+</body>
+</html>
